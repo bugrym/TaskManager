@@ -12,7 +12,7 @@ typealias Completion = (() -> ())
 
 protocol PersistenceStrategy: AnyObject {
     func fetchTask() -> [Task]
-    func addTask(_ description: String) -> Task?
+    func addTask(_ description: String, completion: @escaping ((Task?)->Void))
     func editTask(_ id: String, _ newDescription: String, completion: @escaping Completion)
     func deleteTask(_ id: String, completion: @escaping Completion)
 }
@@ -50,7 +50,7 @@ final class PersistentManager: PersistenceStrategy {
         }
     }
     
-    func addTask(_ description: String) -> Task? {
+    func addTask(_ description: String, completion: @escaping ((Task?) -> Void)) {
         let task = CoreDataTask(context: persistentContainer.viewContext)
         task.creationalDate = Date()
         task.id = UUID().uuidString
@@ -59,11 +59,12 @@ final class PersistentManager: PersistenceStrategy {
         do {
             try persistentContainer.viewContext.save()
             print("Task saved succesfully")
-            return Task(task.id!, Date(), description)
+            let result = Task(task.id!, Date(), description)
+            completion(result)
         } catch {
             persistentContainer.viewContext.rollback()
             print("Couldn't save task")
-            return nil
+            completion(nil)
         }
     }
     
