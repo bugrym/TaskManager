@@ -24,21 +24,7 @@ class AppCoordinator {
     
     // MARK: - Methods
     func start() {
-        showAddTaskViewCtrl()
-    }
-    
-    private func showAddTaskViewCtrl() {
-        let addTaskViewCtrl = AddTaskViewController.instantiate()
-        let viewModel = AddTaskViewModelImpl(serviceProvider: serviceProvider)
-        
-        addTaskViewCtrl.viewModel = viewModel
-        
-        viewModel.onShowListTap = { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.showTaskListViewCtrl()
-        }
-        
-        navigation.pushViewController(addTaskViewCtrl, animated: true)
+        showTaskListViewCtrl()
     }
     
     private func showTaskListViewCtrl() {
@@ -54,7 +40,20 @@ class AppCoordinator {
             strongSelf.showEditTaskViewCtrl($0)
         }
         
+        viewModel.onAddNewTask = { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.showAddTaskViewCtrl()
+        }
+        
         navigation.pushViewController(taskListViewCtrl, animated: true)
+    }
+    
+    private func showAddTaskViewCtrl() {
+        let addTaskViewCtrl = AddTaskViewController.instantiate()
+        let viewModel = AddTaskViewModelImpl(serviceProvider: serviceProvider)
+        
+        addTaskViewCtrl.viewModel = viewModel
+        navigation.pushViewController(addTaskViewCtrl, animated: true)
     }
     
     private func showEditTaskViewCtrl(_ task: Task) {

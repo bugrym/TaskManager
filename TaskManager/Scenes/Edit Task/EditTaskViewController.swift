@@ -28,7 +28,7 @@ final class EditTaskViewController: UIViewController, Storyboardable {
     private lazy var rightItem: UIBarButtonItem = {
         return UIBarButtonItem(title: "Save",
                                style: .done,
-                               target: nil,
+                               target: self,
                                action: #selector(saveChanges))
     }()
     

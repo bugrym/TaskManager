@@ -12,6 +12,12 @@ final class TaskListViewController: UITableViewController, Storyboardable {
     // MARK: - Properties
     var viewModel: TaskListViewModel!
     var dataSource: TaskListDataSource?
+    private lazy var rightItem: UIBarButtonItem = {
+        return UIBarButtonItem(title: viewModel.barBtnTitle,
+                               style: .plain,
+                               target: self,
+                               action: #selector(addNewTask))
+    }()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -30,6 +36,7 @@ final class TaskListViewController: UITableViewController, Storyboardable {
     // MARK: - Methods
     private func setupNavigation() {
         navigationItem.title = viewModel.title
+        navigationItem.rightBarButtonItem = rightItem
     }
     
     private func bind() {
@@ -56,5 +63,11 @@ final class TaskListViewController: UITableViewController, Storyboardable {
                 strongSelf.viewModel.fetchTasks()
             }
         }, for: .valueChanged)
+    }
+    
+    // MARK: - Objc methods
+    @objc
+    private func addNewTask() {
+        viewModel.onAddNewTask?()
     }
 }

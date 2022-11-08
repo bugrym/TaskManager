@@ -89,10 +89,10 @@
 				447CA7842868D6DC003CAFF7 /* AppDelegate.swift */,
 				447CA78A2868D6DC003CAFF7 /* Main.storyboard */,
 				447CA78D2868D6DF003CAFF7 /* Assets.xcassets */,
+				447CA78F2868D6DF003CAFF7 /* LaunchScreen.storyboard */,
 				44BD35F7291A9BA600FCEE88 /* ServiceProvider */,
 				44EBD4DE28CC77400021562F /* Persistence */,
 				44BD35F8291A9BDA00FCEE88 /* ViewModelSupport */,
-				447CA78F2868D6DF003CAFF7 /* LaunchScreen.storyboard */,
 				44BD35F6291A9B8B00FCEE88 /* Navigation */,
 				44EBD4DD28CC772F0021562F /* Supporting protocols */,
 			);
@@ -149,8 +149,8 @@
 		44B2B6522917A7D1008C7BFE /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
-				441F46F828722DB60089A719 /* Add Task */,
 				44863FCE28F07638007E0C10 /* Task List */,
+				441F46F828722DB60089A719 /* Add Task */,
 				44B2B6572917A820008C7BFE /* Edit Task */,
 			);
 			path = Scenes;

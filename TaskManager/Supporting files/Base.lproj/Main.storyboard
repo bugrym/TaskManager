@@ -4,7 +4,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
-        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -56,14 +55,6 @@
                             <constraint firstItem="Huk-hx-GaG" firstAttribute="centerY" secondItem="LLr-EK-FtL" secondAttribute="centerY" id="zbm-Md-sje"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="EQa-y2-5Em">
-                        <barButtonItem key="rightBarButtonItem" title="Task list" id="amz-cd-7Hd">
-                            <imageReference key="image" image="list.bullet" catalog="system" symbolScale="large"/>
-                            <connections>
-                                <action selector="listBtnTap" destination="BYZ-38-t0r" id="EXv-Y0-J5G"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
                     <connections>
                         <outlet property="loader" destination="Huk-hx-GaG" id="jlu-4R-eyd"/>
                         <outlet property="saveBtn" destination="l0Q-ea-f8w" id="OWL-Ms-Fj5"/>
@@ -130,6 +121,8 @@
                             <outlet property="delegate" destination="Ogq-CW-mLD" id="4YU-r7-196"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8fo-hQ-gIE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -176,7 +169,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="list.bullet" catalog="system" width="128" height="87"/>
         <systemColor name="labelColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

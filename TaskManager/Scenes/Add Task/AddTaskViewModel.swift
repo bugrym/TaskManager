@@ -11,7 +11,6 @@ typealias ActionClosure = (() -> Void)
 typealias ResultClosure = ((Bool) -> Void)
 
 protocol AddTaskViewModel: AnyObject {
-    var onShowListTap: ActionClosure? { get set }
     var onValidateBtn: ActionClosure? { get set }
     var title: String { get }
     var isSaveEnabled: Bool { get }
@@ -23,7 +22,6 @@ protocol AddTaskViewModel: AnyObject {
 final class AddTaskViewModelImpl: BaseViewModel, AddTaskViewModel {
     
     // MARK: - Properties
-    var onShowListTap: ActionClosure?
     var onValidateBtn: ActionClosure?
     var title: String { "Add new task" }
     var isSaveEnabled: Bool { !description.isEmpty }

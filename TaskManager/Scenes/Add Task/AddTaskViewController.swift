@@ -56,11 +56,6 @@ final class AddTaskViewController: UIViewController, Storyboardable {
         saveBtn.isEnabled = viewModel.isSaveEnabled
     }
     
-    // MARK: - Objc methods
-    @IBAction func listBtnTap() {
-        viewModel.onShowListTap?()
-    }
-    
     @IBAction func saveBtnTap() {
         isLoading(true)
         viewModel.saveTask() { [weak self] in
