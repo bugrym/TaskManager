@@ -35,8 +35,10 @@ final class TaskListViewController: UITableViewController, Storyboardable {
     private func bind() {
         viewModel.onDataUpdate = { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.tableView.refreshControl?.endRefreshing()
-            strongSelf.tableView.reloadData()
+            DispatchQueue.main.async {
+                strongSelf.tableView.refreshControl?.endRefreshing()
+                strongSelf.tableView.reloadData()
+            }
         }
     }
     

@@ -11,7 +11,9 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    private let appCoordinator = AppCoordinator()
+    
+    private let serviceProvider: ServiceProvider = ServiceProviderImpl()
+    private lazy var appCoordinator = AppCoordinator(serviceProvider: serviceProvider)
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.

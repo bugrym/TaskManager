@@ -19,7 +19,7 @@ protocol EditTaskViewModel: AnyObject {
     func saveChanges(completion: @escaping Completion)
 }
 
-final class EditTaskViewModelImpl: EditTaskViewModel {
+final class EditTaskViewModelImpl: BaseViewModel, EditTaskViewModel {
     
     // MARK: - Properties
     var title: String { "Edit task" }
@@ -36,8 +36,9 @@ final class EditTaskViewModelImpl: EditTaskViewModel {
     private var task: Task
     
     // MARK: - Init
-    init(_ task: Task) {
+    init(serviceProvider: ServiceProvider, task: Task) {
         self.task = task
+        super.init(serviceProvider: serviceProvider)
     }
     
     // MARK: - Methods
@@ -47,8 +48,7 @@ final class EditTaskViewModelImpl: EditTaskViewModel {
     
     func saveChanges(completion: @escaping Completion) {
         guard isSaveEnabled else { return }
-        
-        PersistentManager.shared.editTask(task.id, description) {
+        serviceProvider.persistenceManager.editTask(task.id, description) {
             completion()
         }
     }

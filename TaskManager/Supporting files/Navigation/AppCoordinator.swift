@@ -11,9 +11,15 @@ class AppCoordinator {
     
     // MARK: - Properties
     private let navigation = UINavigationController()
+    private let serviceProvider: ServiceProvider
     
     var rootViewController: UIViewController {
         return navigation
+    }
+    
+    // MARK: - Initialization
+    init(serviceProvider: ServiceProvider) {
+        self.serviceProvider = serviceProvider
     }
     
     // MARK: - Methods
@@ -23,7 +29,7 @@ class AppCoordinator {
     
     private func showAddTaskViewCtrl() {
         let addTaskViewCtrl = AddTaskViewController.instantiate()
-        let viewModel = AddTaskViewModelImpl()
+        let viewModel = AddTaskViewModelImpl(serviceProvider: serviceProvider)
         
         addTaskViewCtrl.viewModel = viewModel
         
@@ -37,7 +43,7 @@ class AppCoordinator {
     
     private func showTaskListViewCtrl() {
         let taskListViewCtrl = TaskListViewController.instantiate()
-        let viewModel = TaskListViewModelImpl()
+        let viewModel = TaskListViewModelImpl(serviceProvider: serviceProvider)
         let dataSource = TaskListDataSourceImpl(viewModel: viewModel)
         
         taskListViewCtrl.viewModel = viewModel
@@ -53,7 +59,7 @@ class AppCoordinator {
     
     private func showEditTaskViewCtrl(_ task: Task) {
         let editTaskViewCtrl = EditTaskViewController.instantiate()
-        let viewModel = EditTaskViewModelImpl(task)
+        let viewModel = EditTaskViewModelImpl(serviceProvider: serviceProvider, task: task)
         
         editTaskViewCtrl.viewModel = viewModel
         

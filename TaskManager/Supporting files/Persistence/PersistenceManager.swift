@@ -18,20 +18,19 @@ protocol PersistenceStrategy: AnyObject {
 }
 
 final class PersistentManager: PersistenceStrategy {
-    let persistentContainer: NSPersistentContainer
     
-    static let shared: PersistenceStrategy = PersistentManager()
-    
-    // Init
-    private init() {
-        persistentContainer = NSPersistentContainer(name: "CoreDataTask")
-        persistentContainer.loadPersistentStores { description, error in
-            if let error = error {
-                print("Fail to load PersistentStore with error: \(error.localizedDescription)")
+    // MARK: - Properties
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "CoreDataTask")
+        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            if let error = error as NSError? {
+                fatalError("Fail to load PersistentStore with error: \(error.localizedDescription)")
             }
-        }
-    }
+        })
+        return container
+    }()
     
+    // MARK: - Methods
     func fetchTask() -> [Task] {
         let fetchRequest: NSFetchRequest<CoreDataTask> = CoreDataTask.fetchRequest()
         
@@ -51,68 +50,83 @@ final class PersistentManager: PersistenceStrategy {
     }
     
     func addTask(_ description: String, completion: @escaping ((Task?) -> Void)) {
-        let task = CoreDataTask(context: persistentContainer.viewContext)
+        let context = persistentContainer.newBackgroundContext()
+        
+        let task = CoreDataTask(context: context)
         task.creationalDate = Date()
         task.id = UUID().uuidString
         task.taskDescription = description
         
-        do {
-            try persistentContainer.viewContext.save()
-            print("Task saved succesfully")
-            let result = Task(task.id!, Date(), description)
-            completion(result)
-        } catch {
-            persistentContainer.viewContext.rollback()
-            print("Couldn't save task")
-            completion(nil)
+        context.perform {
+            do {
+                try context.save()
+                print("Task saved succesfully")
+                if let id = task.id {
+                    let result = Task(id, Date(), description)
+                    completion(result)
+                } else {
+                    completion(nil)
+                }
+            } catch {
+                context.rollback()
+            }
         }
     }
     
     func editTask(_ id: String, _ newDescription: String, completion: @escaping Completion) {
+        let context = persistentContainer.newBackgroundContext()
+        context.automaticallyMergesChangesFromParent = true
+        
         let fetchRequest: NSFetchRequest<CoreDataTask> = CoreDataTask.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id = %@", id)
         
-        do {
-            let result = try persistentContainer.viewContext.fetch(fetchRequest)
-            
-            if let objectToEdit = result.first {
-                objectToEdit.taskDescription = newDescription
+        context.perform {
+            do {
+                let result = try context.fetch(fetchRequest)
                 
-                do {
-                    try persistentContainer.viewContext.save()
-                    completion()
-                } catch {
-                    persistentContainer.viewContext.rollback()
-                    print("Couldn't edit task")
+                if let objectToEdit = result.first {
+                    objectToEdit.taskDescription = newDescription
+                    
+                    do {
+                        try context.save()
+                        completion()
+                    } catch {
+                        context.rollback()
+                        print("Couldn't edit task")
+                    }
                 }
+            } catch {
+                context.rollback()
+                print("Couldn't fetch task")
             }
-        } catch {
-            persistentContainer.viewContext.rollback()
-            print("Couldn't fetch task")
         }
     }
     
     func deleteTask(_ id: String, completion: @escaping Completion) {
+        let context = persistentContainer.newBackgroundContext()
+        context.automaticallyMergesChangesFromParent = true
+        
         let fetchRequest: NSFetchRequest<CoreDataTask> = CoreDataTask.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id = %@", id)
         
-        do {
-            let result = try persistentContainer.viewContext.fetch(fetchRequest)
-            
-            if let objectToDelete = result.first {
-                persistentContainer.viewContext.delete(objectToDelete)
+        context.perform {
+            do {
+                let result = try context.fetch(fetchRequest)
                 
-                do {
-                    try persistentContainer.viewContext.save()
-                    completion()
-                } catch {
-                    persistentContainer.viewContext.rollback()
-                    print("Couldn't delete task")
+                if let objectToDelete = result.first {
+                    context.delete(objectToDelete)
+                    do {
+                        try context.save()
+                        completion()
+                    } catch {
+                        context.rollback()
+                        print("Couldn't delete task")
+                    }
                 }
+            } catch {
+                context.rollback()
+                print("Couldn't fetch task")
             }
-        } catch {
-            persistentContainer.viewContext.rollback()
-            print("Couldn't fetch task")
         }
     }
 }

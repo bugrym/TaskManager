@@ -20,7 +20,7 @@ protocol AddTaskViewModel: AnyObject {
     func saveTask(completion: @escaping Completion)
 }
 
-final class AddTaskViewModelImpl: AddTaskViewModel {
+final class AddTaskViewModelImpl: BaseViewModel, AddTaskViewModel {
     
     // MARK: - Properties
     var onShowListTap: ActionClosure?
@@ -34,15 +34,20 @@ final class AddTaskViewModelImpl: AddTaskViewModel {
         }
     }
     
+    // MARK: - Initialization
+    override init (serviceProvider: ServiceProvider) {
+        super.init(serviceProvider: serviceProvider)
+    }
+    
     // MARK: - Methods
     func updateDescription(_ text: String) {
         description = text
     }
     
     func saveTask(completion: @escaping Completion) {
-        PersistentManager.shared.addTask(description) { [weak self] _ in
+        serviceProvider.persistenceManager.addTask(description) { [weak self] _ in
             guard let strongSelf = self else { return }
-            strongSelf.description = ""
+                strongSelf.description = ""
             completion()
         }
     }

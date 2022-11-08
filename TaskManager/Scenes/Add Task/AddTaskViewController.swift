@@ -42,7 +42,9 @@ final class AddTaskViewController: UIViewController, Storyboardable {
     private func bind() {
         viewModel.onValidateBtn = { [weak self] in
             guard let strongSelf = self else { return }
-            strongSelf.configureSaveBtn()
+            DispatchQueue.main.async {
+                strongSelf.configureSaveBtn()
+            }
         }
     }
     

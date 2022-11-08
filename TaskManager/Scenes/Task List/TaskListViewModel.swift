@@ -13,12 +13,12 @@ protocol TaskListViewModel: AnyObject {
     var onEditTask: ((Task) -> Void)? { get set }
     var title: String { get }
     
+    func fetchTasks() 
     func deleteTaskAt(_ indexPath: IndexPath)
     func editTaskAt(_ indexPath: IndexPath)
-    func fetchTasks()
 }
 
-final class TaskListViewModelImpl: TaskListViewModel {
+final class TaskListViewModelImpl: BaseViewModel, TaskListViewModel {
     
     // MARK: - Properties
     var dataSource: [Task] = [] {
@@ -31,15 +31,20 @@ final class TaskListViewModelImpl: TaskListViewModel {
     var onEditTask: ((Task) -> Void)?
     var title: String { "Task list" }
     
+    // MARK: - Initialization
+    override init (serviceProvider: ServiceProvider) {
+        super.init(serviceProvider: serviceProvider)
+    }
+    
     // MARK: - Methods
     func fetchTasks() {
-        dataSource = PersistentManager.shared.fetchTask()
+        dataSource = serviceProvider.persistenceManager.fetchTask()
     }
     
     func deleteTaskAt(_ indexPath: IndexPath) {
         let taskId = dataSource[indexPath.row].id
         
-        PersistentManager.shared.deleteTask(taskId) { [weak self] in
+        serviceProvider.persistenceManager.deleteTask(taskId) { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.dataSource.remove(at: indexPath.row)
         }
